@@ -8,11 +8,11 @@
         <version>3.4.5</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>SeguridadReact2</groupId>
-    <artifactId>SeguridadReact2</artifactId>
+    <groupId>SeguridadReact3</groupId>
+    <artifactId>SeguridadReact</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>SeguridadReact2</name>
-    <description>SeguridadReact2</description>
+    <name>SeguridadReact</name>
+    <description>SeguridadReact</description>
     <url/>
     <licenses>
         <license/>

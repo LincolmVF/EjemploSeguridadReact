@@ -1,10 +1,10 @@
-package seguridadreact2.seguridadreact2;
+package seguridadreact3.seguridadreact;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class SeguridadReact2ApplicationTests {
+class SeguridadReactApplicationTests {
 
     @Test
     void contextLoads() {

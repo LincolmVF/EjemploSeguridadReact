@@ -1,13 +1,13 @@
-package seguridadreact2.seguridadreact2;
+package seguridadreact3.seguridadreact;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class SeguridadReact2Application {
+public class SeguridadReactApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(SeguridadReact2Application.class, args);
+        SpringApplication.run(SeguridadReactApplication.class, args);
     }
 
 }
