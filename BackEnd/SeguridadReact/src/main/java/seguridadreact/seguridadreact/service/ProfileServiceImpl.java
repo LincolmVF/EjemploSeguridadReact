@@ -1,60 +1,66 @@
 package seguridadreact.seguridadreact.service;
 
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import seguridadreact.seguridadreact.entity.RoleEntity;
 import seguridadreact.seguridadreact.entity.UserEntity;
 import seguridadreact.seguridadreact.io.ProfileRequest;
 import seguridadreact.seguridadreact.io.ProfileResponse;
+import seguridadreact.seguridadreact.repository.RoleRepository;
 import seguridadreact.seguridadreact.repository.UserRepository;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService {
-
-    private final  UserRepository userRepository;
-
-private final PasswordEncoder passwordEncoder;
-
+    private final UserRepository userRepository;
+    // NUEVO: Inyectamos el repositorio de roles
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public ProfileResponse createProfile(ProfileRequest request) {
         UserEntity newProfile = convertToUserEntity(request);
         if(!userRepository.existsByEmail(request.getEmail())) {
+            // NUEVO: Asignar rol por defecto (USER) al registrar un nuevo usuario
+            RoleEntity userRole = roleRepository.findByName("USER")
+                    .orElseThrow(() -> new RuntimeException("Error: Rol USER no encontrado."));
+
+            Set<RoleEntity> roles = new HashSet<>();
+            roles.add(userRole);
+            newProfile.setRoles(roles);
+
             newProfile = userRepository.save(newProfile);
-
-
             return convertToProfileResponse(newProfile);
         }
-throw new ResponseStatusException(HttpStatus.CONFLICT, "El email ya existe");
-
+        throw new ResponseStatusException(HttpStatus.CONFLICT, "El email ya existe");
     }
 
     @Override
     public ProfileResponse getProfile(String email) {
-       UserEntity existingUser =     userRepository.findByEmail(email)
-                  .orElseThrow(() -> new UsernameNotFoundException("El usuario"+ email +"no fue encontrado"));
-
-return convertToProfileResponse(existingUser);
+        UserEntity existingUser = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("El usuario " + email + " no fue encontrado"));
+        return convertToProfileResponse(existingUser);
     }
 
     private ProfileResponse convertToProfileResponse(UserEntity newProfile) {
-    return ProfileResponse.builder()
-            .name(newProfile.getName())
-            .email(newProfile.getEmail())
-            .userId(newProfile.getUserId())
-            .isAccountVerified(newProfile.getIsAccountVerified())
-            .build();
+        return ProfileResponse.builder()
+                .name(newProfile.getName())
+                .email(newProfile.getEmail())
+                .userId(newProfile.getUserId())
+                .isAccountVerified(newProfile.getIsAccountVerified())
+                .build();
     }
 
     private UserEntity convertToUserEntity(ProfileRequest request) {
-         return UserEntity.builder()
+        return UserEntity.builder()
                 .email(request.getEmail())
                 .userId(UUID.randomUUID().toString())
                 .name(request.getNombre())
